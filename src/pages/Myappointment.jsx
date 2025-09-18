@@ -16,7 +16,7 @@ const Myappointment = () => {
           }
       }
 
-       const response=await fetch(backendUrl + "api/technician/get-appointment", options);
+       const response=await fetch(backendUrl + "/api/technician/get-appointment", options);
        const data=await response.json()
        console.log(data)
        setTechnicianData(data);

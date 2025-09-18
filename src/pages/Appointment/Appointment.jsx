@@ -199,7 +199,7 @@ const Appointment = () => {
         },
         body : JSON.stringify({technicianId:technicianId})
       }
-      const response= await fetch(backendUrl+"api/technician/book-appointment", options)
+      const response= await fetch(backendUrl+"/api/technician/book-appointment", options)
       const data=await response.json();
       console.log(data);
       return data; // Return data for potential use
