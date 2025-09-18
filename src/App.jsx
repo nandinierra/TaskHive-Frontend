@@ -8,7 +8,7 @@ import Contact from "./pages/Contact.jsx";
 import Technicians from "./pages/Technicians.jsx";
 import Myprofile from "./pages/Myprofile.jsx";
 import Myappointment from "./pages/Myappointment.jsx";
-import Appointment from "./pages/Appointment.jsx";
+import Appointment from "./pages/Appointment/Appointment.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 

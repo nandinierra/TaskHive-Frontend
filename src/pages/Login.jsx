@@ -23,6 +23,7 @@ const Login = () => {
        const {data} =await axios.post(backendUrl + '/api/user/login',formData );
         if(data.success){
           localStorage.setItem('token', data.token)
+          console.log(data.token)
           setToken(data.token)
           toast.success("successfully LogedIn")
           navigate('/', {replace:true})

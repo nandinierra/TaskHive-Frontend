@@ -1,10 +1,29 @@
-import { useContext } from "react";
+import { useContext,useState, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
 
 const Myappointment = () => {
-  const { technicians } = useContext(AppContext);
+  const { token } = useContext(AppContext);
+  const [technicianData, setTechnicianData] = useState([])
+  // const myAppointments = technicians.slice(0, 3);
+  useEffect(()=>{
+     const getTheAppointments=async ()=>{
 
-  const myAppointments = technicians.slice(0, 3);
+      const options={
+          "method":"GET",
+          "headers":{
+            "Content-Type":"application/json",
+            "Authorization":`Bearer ${token}`
+          }
+      }
+
+       const response=await fetch("http://localhost:6007/api/technician/get-appointment", options);
+       const data=await response.json()
+       console.log(data)
+       setTechnicianData(data);
+
+     }
+     getTheAppointments()
+  }, [])
 
   return (
     <div className="min-h-screen mt-[60px] bg-gray-100 py-10 px-4">
@@ -13,29 +32,29 @@ const Myappointment = () => {
           My Appointments
         </h1>
 
-        {myAppointments.length === 0 ? (
+        {technicianData.length === 0 ? (
           <p className="text-gray-600">You have no appointments yet.</p>
         ) : (
           <div className="space-y-6">
-            {myAppointments.map((tech) => (
+            {technicianData.map((tech) => (
               <div
-                key={tech.id}
+                key={tech._id}
                 className="flex items-center justify-between bg-gray-50 border rounded-lg p-4 shadow-sm"
               >
               
                 <div className="flex items-center gap-4">
                   <img
-                    src={tech.image}
-                    alt={tech.name}
+                    src={tech.technicianId.image}
+                    alt={tech.technicianId.name}
                     className="w-20 h-20 rounded-full object-cover border"
                   />
                   <div>
                     <h2 className="text-lg font-semibold text-gray-800">
-                      {tech.name}
+                      {tech.technicianId.name}
                     </h2>
-                    <p className="text-sm text-gray-600">{tech.profession}</p>
+                    <p className="text-sm text-gray-600">{tech.technicianId.profession}</p>
                     <p className="text-sm text-gray-500">
-                      Experience: {tech.experience}
+                      Experience: {tech.technicianId.experience}
                     </p>
                   </div>
                 </div>
