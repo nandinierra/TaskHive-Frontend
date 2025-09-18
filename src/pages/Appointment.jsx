@@ -1,5 +1,4 @@
 
-
 import { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
@@ -8,7 +7,7 @@ const Appointment = () => {
   const { technicianId } = useParams();
   const { technicians, user } = useContext(AppContext);
   const navigate = useNavigate();
-  
+  console.log(technicians)
   const [techInfo, setTechInfo] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState("");
@@ -21,14 +20,14 @@ const Appointment = () => {
   const [bookedSlots, setBookedSlots] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(true);
 
-  // Define available time slots
+  
   const allTimeSlots = [
     "09:00 AM", "10:00 AM", "11:00 AM", 
     "12:00 PM", "01:00 PM", "02:00 PM", 
     "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM"
   ];
 
-  // Get dates for the next 7 days (including today)
+ 
   const getDateOptions = () => {
     const options = [];
     const today = new Date();
@@ -59,7 +58,7 @@ const Appointment = () => {
 
   const dateOptions = getDateOptions();
 
-  // Service types based on profession
+ 
   const getServiceTypes = (profession) => {
     const services = {
       Electrician: ["Wiring Installation", "Lighting Setup", "Outlet Repair", "Panel Upgrade", "Smart Home Setup"],
@@ -73,23 +72,23 @@ const Appointment = () => {
     return services[profession] || ["General Service"];
   };
 
-  // Check if a slot is available (not booked and not in the past)
+  
   const isSlotAvailable = (date, slotTime) => {
-    // Check if slot is booked
+    
     const isBooked = bookedSlots.some(booking => 
       booking.date === date && booking.time === slotTime
     );
     
     if (isBooked) return false;
     
-    // Check if slot is in the past
+ 
     const now = new Date();
     const selectedDateTime = new Date(`${date}T${convertTo24Hour(slotTime)}:00`);
     
     return selectedDateTime > now;
   };
 
-  // Convert time to 24-hour format for comparison
+  
   const convertTo24Hour = (timeStr) => {
     const [time, modifier] = timeStr.split(' ');
     let [hours, minutes] = time.split(':');
@@ -105,7 +104,7 @@ const Appointment = () => {
     return `${hours}:${minutes}`;
   };
 
-  // Format currency in Indian Rupees
+ 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -114,14 +113,14 @@ const Appointment = () => {
     }).format(amount);
   };
 
-  // Calculate service price based on service type
+ 
   const calculateServicePrice = () => {
     if (!techInfo || !serviceType) return 0;
    
-    // Base price is technician's hourly rate (assuming it's in INR)
+   
     let basePrice = techInfo.hourlyRate || 500;
     
-    // Adjust price based on service type complexity
+  
     const service = serviceType.toLowerCase();
     
     if (service.includes("installation") || service.includes("upgrade")) {
@@ -135,7 +134,7 @@ const Appointment = () => {
     return basePrice;
   };
  console.log(techInfo)
-  // Technician descriptions based on profession
+ 
   const getTechnicianDescription = (technician) => {
     const descriptions = {
       Electrician: `${technician.name} is a certified electrician with ${technician.experience} of experience in residential and commercial electrical work. Specializing in wiring, lighting solutions, and electrical system upgrades, they ensure all work meets safety standards and regulations.`,
@@ -149,12 +148,12 @@ const Appointment = () => {
     return descriptions[technician.profession] || `${technician.name} is a skilled ${technician.profession.toLowerCase()} with ${technician.experience} of experience providing quality service to customers.`;
   };
 
-  // Fetch technician info
+ 
   const fetchTechInfo = async () => {
     const techInfor = technicians.find(tech => tech._id === (technicianId));
     setTechInfo(techInfor);
     
-    // Set default service type based on profession
+
     if (techInfor) {
       const services = getServiceTypes(techInfor.profession);
       if (services.length > 0) {
@@ -163,7 +162,7 @@ const Appointment = () => {
     }
   };
 
-  // Fetch booked slots for this technician
+ 
   const fetchBookedSlots = async () => {
     setLoadingSlots(true);
     try {
@@ -190,23 +189,32 @@ const Appointment = () => {
     fetchTechInfo();
     fetchBookedSlots();
     
-    // Set initial selected date to today
     setSelectedDate(new Date().toISOString().split('T')[0]);
   }, [technicians, technicianId]);
 
+
+const userData = () => {
+  if (!techInfo) return; 
+
+  const details = {
+    name: techInfo.name,
+    profession: techInfo.profession,
+    experience: techInfo.experience
+  };
+
+  console.log(details);
+};
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!selectedSlot) {
       alert("Please select a time slot");
       return;
     }
-    
     setIsSubmitting(true);
-    
     try {
       const servicePrice = calculateServicePrice();
-      
       // In a real app, this would be an API call to book the slot
       const bookingData = {
         technicianId,
@@ -222,21 +230,24 @@ const Appointment = () => {
         status: "confirmed",
         bookedAt: new Date().toISOString()
       };
-      
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
       // Add to booked slots
       setBookedSlots([...bookedSlots, { date: selectedDate, time: selectedSlot }]);
-      
-      alert("Appointment booked successfully!");
-      
+     
       // Redirect to confirmation page
-      navigate("/myappointment", { state: { booking: bookingData } });
-    } catch (error) {
+      userData()
+      navigate("/myappointment", { state: { booking: bookingData } }); 
+      
+    }
+
+     catch (error){
       console.error("Booking error:", error);
       alert("Failed to book appointment. Please try again.");
-    } finally {
+    }
+    
+    
+    finally {
       setIsSubmitting(false);
     }
   };
@@ -256,13 +267,13 @@ console.log(techInfo)
   }
 
   const servicePrice = calculateServicePrice();
-  const taxAmount = servicePrice * 0.18; // 18% GST
+  const taxAmount = servicePrice * 0.18;
   const totalPrice = servicePrice + taxAmount;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Back Button */}
+      
         <button 
           onClick={() => navigate(-1)}
           className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
@@ -277,7 +288,6 @@ console.log(techInfo)
 
           <div className="md:flex">
 
-            {/* Technician Info Section */}
             <div className="md:w-2/5 bg-blue-50 p-6">
               <div className="text-center">
                 <img
@@ -325,13 +335,13 @@ console.log(techInfo)
               </div>
             </div>
             
-            {/* Booking Form Section */}
+          
             <div className="md:w-3/5 p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Book Appointment</h2>
               
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Service Type */}
+               
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Service Type</label>
                     <select
@@ -346,7 +356,7 @@ console.log(techInfo)
                     </select>
                   </div>
                   
-                  {/* Date Selection */}
+             
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Select Date</label>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -367,7 +377,7 @@ console.log(techInfo)
                     </div>
                   </div>
                   
-                  {/* Time Slots */}
+                 
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Available Time Slots {selectedDate && `for ${new Date(selectedDate).toLocaleDateString('en-IN', { weekday: 'long', month: 'short', day: 'numeric' })}`}
@@ -404,8 +414,7 @@ console.log(techInfo)
                       </div>
                     )}
                   </div>
-                  
-                  {/* Customer Name */}
+                
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
                     <input
@@ -418,7 +427,7 @@ console.log(techInfo)
                     />
                   </div>
                   
-                  {/* Customer Phone */}
+                
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
                     <input
@@ -430,8 +439,7 @@ console.log(techInfo)
                       placeholder="98XXXXXX90"
                     />
                   </div>
-                  
-                  {/* Address */}
+                 
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
                     <input
@@ -444,7 +452,7 @@ console.log(techInfo)
                     />
                   </div>
                   
-                  {/* Problem Description */}
+              
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Describe the Problem</label>
                     <textarea
@@ -457,7 +465,6 @@ console.log(techInfo)
                     />
                   </div>
                   
-                  {/* Price Summary */}
                   {selectedSlot && (
                     <div className="md:col-span-2 bg-blue-50 p-4 rounded-lg">
                       <h3 className="font-medium text-gray-900 mb-2">Booking Summary</h3>
@@ -477,8 +484,7 @@ console.log(techInfo)
                     </div>
                   )}
                 </div>
-                
-                {/* Submit Button */}
+              
                 <div className="mt-8">
                   <button
                     type="submit"
@@ -494,8 +500,6 @@ console.log(techInfo)
             </div>
           </div>
         </div>
-
-        {/* Additional Info Section */}
         <div className="mt-8 bg-white rounded-lg shadow-md p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">What to Expect</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
