@@ -3,8 +3,9 @@
 import { useContext, useState, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
 
+
 const Myappointment = () => {
-  
+
   const { token, backendUrl } = useContext(AppContext);
   const [technicianData, setTechnicianData] = useState([])
 
@@ -39,6 +40,7 @@ useEffect(() => {
     };
     
     // Only call the function if a token exists
+    
     if (token) {
         getTheAppointments();
     } 
@@ -48,20 +50,32 @@ useEffect(() => {
         setTechnicianData([]);
     }
     
-}, [token]); // Add token to dependency array
+}, [token]); 
+
+
 
  const cancelAppointment=async (appointmentId)=>{
     const options={
       "method":"DELETE",
+
       "headers":{
          "Content-Type":"application/json",
          "Authorization":`Bearer ${token}`
       }
+
     }
-    const response= await fetch(backendUrl, `/delete-appointment/${appointmentId}`, options)
-    const data=response.json();
-    console.log(data)
+
+
+    const response= await fetch(backendUrl + `/api/technician/delete-appointment/${appointmentId}`, options)
+    const data=await response.json();
+    if(response.ok){
+      setTechnicianData(prev=>prev.filter(tech=>tech._id!==appointmentId))
+    }
+    else{
+      throw new Error(data.message)
+    }
  }
+
 
   return (
     <div className="min-h-screen mt-[60px] bg-gray-100 py-10 px-4">
@@ -69,7 +83,6 @@ useEffect(() => {
         <h1 className="text-2xl font-bold text-gray-800 mb-6">
           My Appointments
         </h1>
-
         {technicianData.length === 0 ? (
           <p className="text-gray-600">You have no appointments yet.</p>
         ) : (
@@ -102,7 +115,7 @@ useEffect(() => {
                   <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                     Pay Online
                   </button>
-                  <button onClick={cancelAppointment(tech.technicianId._id)}
+                  <button onClick={()=>cancelAppointment(tech._id)}
                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
                     Cancel Appointment
                   </button>

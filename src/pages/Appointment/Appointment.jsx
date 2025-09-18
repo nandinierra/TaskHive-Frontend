@@ -188,7 +188,7 @@ const Appointment = () => {
     setSelectedDate(new Date().toISOString().split('T')[0]);
   }, [technicians, technicianId]);
 
-  
+
   const userData = async () => {
     try {
       const options = {
