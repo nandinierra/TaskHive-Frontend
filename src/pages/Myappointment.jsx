@@ -1,29 +1,67 @@
-import { useContext,useState, useEffect } from "react";
+
+
+import { useContext, useState, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
 
 const Myappointment = () => {
-  const { token } = useContext(AppContext);
+  
+  const { token, backendUrl } = useContext(AppContext);
   const [technicianData, setTechnicianData] = useState([])
-  // const myAppointments = technicians.slice(0, 3);
-  useEffect(()=>{
-     const getTheAppointments=async ()=>{
 
-      const options={
-          "method":"GET",
-          "headers":{
-            "Content-Type":"application/json",
-            "Authorization":`Bearer ${token}`
-          }
+
+useEffect(() => {
+    const getTheAppointments = async () => {
+        try {
+            const options = {
+                "method": "GET",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            };
+            const response = await fetch(backendUrl + "/api/technician/get-appointment", options);
+            
+            if (!response.ok) {
+                // If the response is not successful (e.g., 403, 404, 500)
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            // Assuming a successful response returns an array of appointments
+            console.log(data);
+            setTechnicianData(data);
+        } catch (error) {
+            console.error("Failed to fetch appointments:", error);
+            // You can set an error state here to show a message to the user
+            setTechnicianData([]); // Ensure it's an empty array to prevent the .map() error
+        }
+    };
+    
+    // Only call the function if a token exists
+    if (token) {
+        getTheAppointments();
+    } 
+    
+    else {
+        console.log("No token available. Cannot fetch appointments.");
+        setTechnicianData([]);
+    }
+    
+}, [token]); // Add token to dependency array
+
+ const cancelAppointment=async (appointmentId)=>{
+    const options={
+      "method":"DELETE",
+      "headers":{
+         "Content-Type":"application/json",
+         "Authorization":`Bearer ${token}`
       }
-
-       const response=await fetch(backendUrl + "/api/technician/get-appointment", options);
-       const data=await response.json()
-       console.log(data)
-       setTechnicianData(data);
-
-     }
-     getTheAppointments()
-  }, [])
+    }
+    const response= await fetch(backendUrl, `/delete-appointment/${appointmentId}`, options)
+    const data=response.json();
+    console.log(data)
+ }
 
   return (
     <div className="min-h-screen mt-[60px] bg-gray-100 py-10 px-4">
@@ -64,7 +102,8 @@ const Myappointment = () => {
                   <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                     Pay Online
                   </button>
-                  <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                  <button onClick={cancelAppointment(tech.technicianId._id)}
+                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
                     Cancel Appointment
                   </button>
                 </div>
