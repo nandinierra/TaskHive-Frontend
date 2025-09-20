@@ -1,25 +1,27 @@
 
 
-import { createContext, useState, useEffect } from "react";
+
+import {createContext, useState, useEffect} from "react";
 import axios from "axios";
 import { toast } from 'react-toastify';
 
+
 export const AppContext = createContext();
+
+
 
 export const AppContextProvider = ({ children }) => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const [technicians, setTechnicians] = useState([]);
-    const [token, setToken] = useState(localStorage.getItem('token') || '');
+    const [token, setToken] = useState(localStorage.getItem('token') || '' );
     
-    // Combine token retrieval and initial data fetching
-    useEffect(() => {
+       useEffect(() => {
         const fetchInitialData = async () => {
             const storedToken = localStorage.getItem('token');
             if (storedToken) {
-                setToken(storedToken);
+                 setToken(storedToken);
             }
             
-            // Fetch technicians data regardless of token presence
             try {
                 const { data } = await axios.get(backendUrl + '/api/technician/list');
                 if (data.success) {

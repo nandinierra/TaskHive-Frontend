@@ -9,6 +9,7 @@ import CustomerForm from "./CustomerForm.jsx";
 import BookingSummary from "./BookingSummary.jsx";
 import ServiceGuarantees from "./ServiceGuarantees.jsx";
 
+
 const Appointment = () => {
   const { technicianId } = useParams();
   const { technicians, token, backendUrl } = useContext(AppContext);
@@ -32,30 +33,31 @@ const Appointment = () => {
     "09:00 AM", "10:00 AM", "11:00 AM", 
     "12:00 PM", "01:00 PM", "02:00 PM", 
     "03:00 PM", "04:00 PM", "05:00 PM", 
-    "06:00 PM", "07:00 PM", "08:00 PM", "09:00 PM"
+    "06:00 PM", "07:00 PM", "08:00 PM", 
+    "09:00 PM"
   ];
+
 
   // Get date options
   const getDateOptions = () => {
     const options = [];
-    const today = new Date();
-    
+    const today = new Date();  //Sat Sep 20 2025 10:44:21 GMT+0530 (India Standard Time)
+    console.log("today",today)
     for (let i = 0; i < 7; i++) {
       const date = new Date();
       date.setDate(today.getDate() + i);
-      
-      const formattedDate = date.toISOString().split('T')[0];
+      console.log("checking date format", date.toISOString())
+      const formattedDate = date.toISOString().split('T')[0];  //2025-09-23
       
       const displayDate = date.toLocaleDateString('en-IN', { 
         weekday: 'short', 
         month: 'short', 
         day: 'numeric' 
       });
-      
+      console.log("displaydate",displayDate)
       options.push({
         value: formattedDate,
-        label: i === 0 ? `Today, ${displayDate}` : 
-               i === 1 ? `Tomorrow, ${displayDate}` : displayDate
+        label: i === 0 ? `Today, ${displayDate}` : i === 1 ? `Tomorrow, ${displayDate}` : displayDate
       });
     }
     
@@ -82,7 +84,7 @@ const Appointment = () => {
   };
 
 
-
+/**doubt */
   const isSlotAvailable = (date, slotTime) => {
     const isBooked = bookedSlots.some(booking => 
       booking.date === date && booking.time === slotTime
@@ -96,7 +98,8 @@ const Appointment = () => {
     return selectedDateTime > now;
   };
 
-  // Convert to 24-hour format (FIXED)
+  // Convert to 24-hour format (FIXED) 
+
   const convertTo24Hour = (timeStr) => {
     const [time, modifier] = timeStr.split(' ');
     let [hours, minutes] = time.split(':');

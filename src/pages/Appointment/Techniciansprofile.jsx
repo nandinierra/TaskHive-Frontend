@@ -1,5 +1,7 @@
 
-const TechnicianProfile = ({ techInfo, formatCurrency, getTechnicianDescription }) => {
+const TechnicianProfile = (props) => {
+  const {techInfo, formatCurrency, getTechnicianDescription}=props
+  console.log(props)
   return (
     <div className="md:w-2/5 bg-blue-50 p-6">
       <div className="text-center">
