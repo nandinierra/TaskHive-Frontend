@@ -23,16 +23,18 @@ useEffect(() => {
             const response = await fetch(backendUrl + "/api/technician/get-appointment", options);
             
             if (!response.ok) {
-                // If the response is not successful (e.g., 403, 404, 500)
+            
                 const errorData = await response.json();
                 throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
             // Assuming a successful response returns an array of appointments
-            console.log(data);
+            console.log("get-Appointment",data);
             setTechnicianData(data);
-        } catch (error) {
+        } 
+        
+        catch (error) {
             console.error("Failed to fetch appointments:", error);
             // You can set an error state here to show a message to the user
             setTechnicianData([]); // Ensure it's an empty array to prevent the .map() error
@@ -42,6 +44,7 @@ useEffect(() => {
     // Only call the function if a token exists
     
     if (token) {
+      console.log("token - my appointment",token)
         getTheAppointments();
     } 
     
@@ -68,12 +71,14 @@ useEffect(() => {
 
     const response= await fetch(backendUrl + `/api/technician/delete-appointment/${appointmentId}`, options)
     const data=await response.json();
-    if(response.ok){
-      setTechnicianData(prev=>prev.filter(tech=>tech._id!==appointmentId))
-    }
-    else{
-      throw new Error(data.message)
-    }
+    console.log(data);
+     setTechnicianData(data)
+    // if(response.ok){
+    //   setTechnicianData(prev=>prev.filter(tech=>tech._id!==appointmentId))
+    // }
+    // else{
+    //   throw new Error(data.message)
+    // }
  }
 
 

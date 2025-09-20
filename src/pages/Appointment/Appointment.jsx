@@ -26,7 +26,8 @@ const Appointment = () => {
   const [bookedSlots, setBookedSlots] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(true);
 
-  // All time slots array
+ 
+
   const allTimeSlots = [
     "09:00 AM", "10:00 AM", "11:00 AM", 
     "12:00 PM", "01:00 PM", "02:00 PM", 
@@ -61,9 +62,12 @@ const Appointment = () => {
     return options;
   };
 
+
   const dateOptions = getDateOptions();
 
-  // Get service types based on profession
+
+
+
   const getServiceTypes = (profession) => {
     const services = {
       Electrician: ["Wiring Installation", "Lighting Setup", "Outlet Repair", "Panel Upgrade", "Smart Home Setup"],
@@ -77,7 +81,8 @@ const Appointment = () => {
     return services[profession] || ["General Service"];
   };
 
-  // Check if slot is available
+
+
   const isSlotAvailable = (date, slotTime) => {
     const isBooked = bookedSlots.some(booking => 
       booking.date === date && booking.time === slotTime
@@ -149,7 +154,9 @@ const Appointment = () => {
 
   // Fetch technician info
   const fetchTechInfo = async () => {
+    console.log('fetch techniciansId', technicians)
     const techInfor = technicians.find(tech => tech._id === (technicianId));
+     console.log("technicianId",technicianId)
     setTechInfo(techInfor);
 
     if (techInfor) {
@@ -158,6 +165,7 @@ const Appointment = () => {
         setServiceType(services[0]);
       }
     }
+
   };
 
   // Fetch booked slots
@@ -199,9 +207,11 @@ const Appointment = () => {
         },
         body : JSON.stringify({technicianId:technicianId})
       }
+     console.log("options",options)
       const response= await fetch(backendUrl+"/api/technician/book-appointment", options)
       const data=await response.json();
       console.log(data);
+
       return data; // Return data for potential use
     } catch (error) {
       console.error("API call failed:", error);
@@ -210,6 +220,7 @@ const Appointment = () => {
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     if (!selectedSlot) {
       alert("Please select a time slot");
@@ -217,6 +228,7 @@ const Appointment = () => {
     }
     setIsSubmitting(true);
     try {
+    if(token){
       const servicePrice = calculateServicePrice();
       const bookingData = {
         technicianId,
@@ -239,8 +251,15 @@ const Appointment = () => {
       
       // Await the API call here
       await userData();
-      
+      alert("booked successfully")
+        
       navigate("/myappointment", { state: { booking: bookingData }}); 
+    }
+
+    else{
+        navigate('/login', {replace:true})
+    }
+      
     } catch (error) {
       console.error("Booking error:", error);
       alert("Failed to book appointment. Please try again.");
@@ -265,7 +284,7 @@ const Appointment = () => {
   const totalPrice = servicePrice + taxAmount;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen mt-[70px] bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <button 
           onClick={() => navigate(-1)}

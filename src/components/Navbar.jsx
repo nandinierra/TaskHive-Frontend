@@ -63,7 +63,7 @@ const Navbar = () => {
                     <div className="flex items-center gap-2 cursor-pointer group relative">
                         <img
                             className="w-8 rounded-full"
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWdfj1lYIHuHfM7tQ6GF1ndwRqp6TMhIJJhQ&s"
+                            src="https://res.cloudinary.com/doicvqkvb/image/upload/v1757579385/oyblk49lovvrknllxxpj.png"
                         />
                         <div className="absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block">
                             <div className="min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4">
