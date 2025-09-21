@@ -141,19 +141,6 @@ const Appointment = () => {
     return basePrice;
   };
 
-  // Get technician description
-  const getTechnicianDescription = (technician) => {
-    const descriptions = {
-      Electrician: `${technician.name} is a certified electrician with ${technician.experience} of experience in residential and commercial electrical work. Specializing in wiring, lighting solutions, and electrical system upgrades, they ensure all work meets safety standards and regulations.`,
-      Plumber: `${technician.name} is a skilled plumber with ${technician.experience} of expertise in fixing leaks, pipe installations, and drainage systems. They provide efficient and lasting solutions for all plumbing issues with attention to detail.`,
-      Carpenter: `With ${technician.experience} of woodworking experience, ${technician.name} specializes in furniture repair, custom cabinetry, and installation services. Their craftsmanship and attention to detail ensure high-quality results for all projects.`,
-      "Appliance Repair": `${technician.name} has ${technician.experience} of experience repairing household appliances including refrigerators, washing machines, and ovens. They provide reliable service with genuine parts and thorough diagnostics.`,
-      Painter: `${technician.name} is a professional painter with ${technician.experience} of experience in interior and exterior painting projects. They provide color consultation and use high-quality materials for a flawless finish.`,
-      "Car Washer": `${technician.name} offers professional car cleaning services with ${technician.experience} of experience. From basic washes to premium detailing, they use eco-friendly products to make your vehicle look its best.`
-    };
-    
-    return descriptions[technician.profession] || `${technician.name} is a skilled ${technician.profession.toLowerCase()} with ${technician.experience} of experience providing quality service to customers.`;
-  };
 
   // Fetch technician info
   const fetchTechInfo = async () => {
@@ -183,7 +170,7 @@ const Appointment = () => {
           time: "11:00 AM" 
         },
       ];
-      
+ 
       setBookedSlots(mockBookedSlots);
     } catch (error) {
       console.error("Error fetching booked slots:", error);
@@ -304,7 +291,6 @@ const Appointment = () => {
             <TechnicianProfile 
               techInfo={techInfo} 
               formatCurrency={formatCurrency}
-              getTechnicianDescription={getTechnicianDescription}
             />
             
             <div className="md:w-3/5 p-6">

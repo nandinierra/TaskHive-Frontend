@@ -1,3 +1,5 @@
+
+
 const ServiceSelection = ({ techInfo, serviceType, setServiceType, getServiceTypes }) => {
   return (
     <div className="md:col-span-2">
@@ -16,4 +18,8 @@ const ServiceSelection = ({ techInfo, serviceType, setServiceType, getServiceTyp
   );
 };
 
+
+
 export default ServiceSelection;
+
+
