@@ -1,13 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext.jsx";
-import TechnicianProfile from "./techniciansprofile.jsx";
+import TechnicianProfile from "./Techniciansprofile.jsx";
 import ServiceSelection from "./ServiceSelection.jsx";
 import DateSelection from "./DateSelection.jsx";
 import TimeSlotSelection from "./TimeSlotSelection.jsx";
 import CustomerForm from "./CustomerForm.jsx";
 import BookingSummary from "./BookingSummary.jsx";
 import ServiceGuarantees from "./ServiceGuarantees.jsx";
+
 
 
 const Appointment = () => {
